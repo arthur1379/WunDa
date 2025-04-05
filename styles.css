@@ -1,0 +1,467 @@
+/* 設定整體頁面樣式 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #358492;
+    color: white;
+}
+
+/* 頁首區塊樣式 */
+header {
+    background-color: #358492;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-bottom: 2px solid white;
+}
+
+header h1 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.info-top {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.info-bottom {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    border-top: 1px solid white;
+    padding-top: 5px;
+    margin-top: 5px;
+}
+
+.info-bottom span {
+    margin-left: 15px;
+}
+
+/* 組別顯示區塊，平板版橫向排列 */
+.group-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px;
+    border-bottom: 2px solid white;
+}
+
+.group {
+    text-align: center;
+}
+
+.group img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #ccc;
+    object-fit: cover;
+}
+
+/* 按鈕區塊樣式 */
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px;
+}
+
+.buttons button {
+    padding: 10px;
+    border: none;
+    background: #666;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* 主要內容區塊（任務清單） */
+.tasks {
+    padding: 20px;
+}
+
+.task {
+    background: #358492;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+/* 頁腳導航按鈕樣式 */
+footer {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background-color: #222;
+}
+
+.nav-btn {
+    padding: 10px;
+    border: none;
+    background: #555;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* 響應式設計 - 當螢幕小於 768px 時，調整資訊排列 */
+@media (max-width: 768px) {
+    .info-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+    }
+}
+
+/* 按鈕區塊樣式 */
+.buttons {
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+}
+
+.buttons button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border: none;
+    background: #FFC85A;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.buttons button:hover {
+    transform: scale(1.05);
+    background: #FF8000;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.3);
+}
+
+.buttons button:active {
+    transform: scale(0.95);
+}
+
+/* 平板時靠右對齊 */
+@media (min-width: 769px) {
+    .buttons {
+        justify-content: flex-end;
+    }
+}
+
+/* 手機時靠中間 */
+@media (max-width: 768px) {
+    .buttons {
+        justify-content: center;
+    }
+}
+
+/* 單元區塊樣式 */
+.task-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1538px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    /* 確保 padding 不影響寬度 */
+    overflow-x: hidden;
+    /* 防止水平滾動條 */
+    padding-bottom: 80px;
+}
+
+.task {
+    background: #358492;
+    padding: 15px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    /* 確保內邊距不影響寬度 */
+    width: 100%;
+    cursor: pointer; /* 讓滑鼠變成手型，表示可點擊 */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.task:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.task p {
+    font-size: 14px;
+    margin: 5px 0;
+    border-bottom: 1px dashed white;
+    padding-bottom: 5px;
+}
+
+/* 修正手機版超出畫面問題 */
+@media (max-width: 768px) {
+    .task-container {
+        grid-template-columns: 1fr;
+        padding: 10px;
+        width: 100%;
+        max-width: 100%;/* 確保在小屏幕不超出 */
+        overflow-x: hidden;/* 防止水平滾動 */
+        padding-bottom: 120px; /* 增加 padding，避免內容被 footer 擋住 */
+    }
+
+    .task {
+        width: 100%;
+        max-width: 100%;
+        /* 防止子元素超過父容器 */
+    }
+}
+/* 底部導航欄 */
+.footer {
+    width: 100%;
+    background-color: #FFC85A;
+    padding: 15px 0;
+    border-top: 2px solid white;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    z-index: 1000;
+}
+/* 導航容器 */
+.footer-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    background: #f9b837;
+    border-radius: 10px;
+    padding: 10px;
+}
+/* 選單項目 */
+.footer-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 15px 25px;
+    border-right: 1px solid white;
+    transition: transform 0.2s;
+}
+.footer-item:last-child {
+    border-right: none;
+}
+.footer-item:hover {
+    transform: scale(1.1);
+    background-color: #FF8000;
+
+}
+.footer-item i {
+    font-size: 22px;
+}
+.footer-item span {
+    display: inline; /* 預設顯示文字 */
+}
+
+/* 手機版調整：隱藏文字，確保 footer 不會擠壓內容 */
+@media (max-width: 768px) {
+    .footer-container {
+        width: 90%;
+    }
+    .footer-item span {
+        display: none; /* 隱藏文字 */
+    }
+    .footer-item {
+        padding: 15px;
+        border-right: none; /* 移除邊框讓間距更均勻 */
+    }
+}
+/* 確保 footer 不會遮擋主要內容 */
+.content {
+    padding-bottom: 80px; /* 增加底部間距，避免 footer 蓋住內容 */
+}
+
+/******************/
+/* 隱藏媒體庫彈出視窗 */
+.media-library-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* 顯示時的動畫效果 */
+.media-library-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+/* 媒體庫視窗 */
+
+.media-library {
+    background-color: #358492;
+    padding: 20px;
+    width: 80%;
+    max-width: 900px;
+    border-radius: 10px;
+    text-align: center;
+    transform: scale(0.8);
+    transition: transform 0.3s ease-out;
+}
+
+/* 當顯示時，讓它彈跳 */
+.media-library-overlay.show .media-library {
+    transform: scale(1);
+}
+
+/* 返回按鈕 */
+.media-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 媒體網格 */
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5px;
+    padding: 10px;
+}
+
+.media-item {
+    width: 100%;
+    padding-top: 100%; /* 正方形 */
+    background-color: #ccc;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.media-item:active {
+    transform: scale(0.9);
+}
+
+/* 選擇狀態 */
+.media-item.selected {
+    border: 3px solid white;
+}
+
+.media-item i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: black; /* 讓播放按鈕變成黑色 */
+}
+
+/* 播放按鈕 */
+.play-button {
+    background: white;
+    color: black;
+    font-size: 18px;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.play-button:hover {
+    background: #ddd;
+    transform: scale(1.1);
+}
+
+/* 讓媒體庫內容區域可滾動 */
+.media-content {
+    max-height: 60vh; /* 限制高度，確保能夠滾動 */
+    overflow-y: auto;
+    padding: 10px;
+}
+
+/* 響應式設計 */
+/* 手機版調整：改為直向顯示 */
+@media (max-width: 768px) {
+    .media-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 個一列 */
+    }
+
+    .media-content {
+        max-height: 80vh; /* 允許更長的滾動區域 */
+    }
+}
+@media (max-width: 480px) {
+    .media-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/*觀察報告的按鈕樣式設定*/
+.report-button, .mission-start-button {
+    display: block;
+    margin: 15px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #FFC85A;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.mission-start-button {
+    background-color: #f0f0f0;
+    color: #282828;
+}
+
+.report-button:hover, .mission-start-button:hover{
+    background-color: #FF8000;
+    transform: scale(1.05);
+}

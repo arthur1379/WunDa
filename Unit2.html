@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>單元二：櫻花調查員</title>
+    <link rel="stylesheet" href="Unit2.css">
+    <script src="Unit2_new.js" defer></script>
+</head>
+<body>
+    <header class="header">
+        <div class="task-info">
+            <!-- 左側：任務內容 -->
+            <div class="task-content">
+                <h2>任務內容</h2>
+                <div class="dotted-line"></div>
+                <div class="dotted-line"></div>
+                <div class="dotted-line"></div>
+                <div class="dotted-line"></div>
+            </div>
+        
+            <!-- 右側：任務地點 & 任務對象 -->
+            <div class="task-location">
+                <p>任務地點: 櫻花林</p>
+                <p>任務對象: 山櫻花樹編號: 00001 📍</p>
+            </div>
+        </div>
+        </header>
+        
+        <!-- 主要內容 -->
+        <main class="container">
+            <div class="task-group">
+                <!-- 任務一 -->
+                <section class="task task-zero">
+                    <div class="task-header">
+                        <h2 class="task-label">任務一</h2>
+                        <h2 class="task-name">樹木高度基本測量</h2>
+                    </div>
+                    <p>教師將示範操作捲尺及簡易測高法後讓小組個別測量自己的樣樹。</p>
+        
+                    <div class="image-explanation">
+                        <img src="images/m2_Image.png" alt="說明圖片" />
+                    </div>
+        
+                    <div class="measurement-row">
+                        <label for="tree-height">樣樹高度</label>
+                        <input type="number" id="tree-height" name="tree-height" placeholder="請輸入">
+                        <span class="unit">公尺</span>
+                    </div>
+        
+                    <div class="measurement-row">
+                        <label for="tree-diameter">樣樹胸高直徑</label>
+                        <input type="number" id="tree-diameter" name="tree-diameter" placeholder="請輸入">
+                        <span class="unit">公尺</span>
+                    </div>
+                </section>
+        
+                <!--任務二 -->
+                <section class="task task-one">
+                    <div class="task-header">
+                        <h2 class="task-label">任務二</h2>
+                        <h2 class="task-name">計算血斑天牛羽化孔數量</h2>
+                    </div>
+                    <p>請點擊下方樹幹圖標記羽化孔與蛀食孔，系統將自動計算數量。</p>
+                    <div class="dual-canvas-container">
+                        <div class="tree-side">
+                            <canvas id="canvasNorth_T2" class="tree-canvas-north"></canvas>
+                            <p class="tree-label">樹幹北面</p>
+                        </div>
+        
+                        <div class="tree-side">
+                            <canvas id="canvasSouth_T2" class="tree-canvas-south"></canvas>
+                            <p class="tree-label">樹幹南面</p>
+                        </div>
+                    </div>      
+                </section>
+            </div>
+        <div class="task-group">
+            <!--任務三 -->
+            <section class="task task-one">
+                <div class="task-header">
+                    <h2 class="task-label">任務三</h2>
+                    <h2 class="task-name">計算血斑天牛蛀食孔數量</h2>
+                </div>
+                <p>請在下方樹幹圖上點擊，用以標示血斑天牛蛀食孔位置，系統將會自動計算數量。</p>
+                <div class="dual-canvas-container">
+                    <div class="tree-container">
+                        <div class="tree-side " id="treeSideNorth">
+                            <canvas id="canvasNorth_T3" class="tree-canvas-north"></canvas>
+                            <p class="tree-label">樹幹北面</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tree-container">
+                        <div class="tree-side"   >
+                            <canvas id="canvasSouth_T3" class="tree-canvas-south"></canvas>
+                            <p class="tree-label">樹幹南面</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </section>
+        
+            <!--任務四 -->
+            <section class="task task-three">
+                <div class="task-header">
+                    <h2 class="task-label">任務四</h2>
+                    <h2 class="task-name">植物健康度調查春季因子</h2>
+                </div>
+                <p>請抬頭觀察看看枝葉茂密程度，在下圖選擇最接近的狀態。</p>
+                <div class="image-selection">
+                    <img src="images/U2Spring/B01.jpg" alt="圖片01" class="selectable" data-value="1">
+                    <img src="images/U2Spring/B02.jpg" alt="圖片02" class="selectable" data-value="2">
+                    <img src="images/U2Spring/B03.jpg" alt="圖片03" class="selectable" data-value="3">
+                    <img src="images/U2Spring/B04.jpg" alt="圖片04" class="selectable" data-value="4">
+                </div>
+            </section>
+        </div>
+        <div class="task-group single">
+            <!--任務五-->
+            <section class="task task-four">
+                <div class="task-header">
+                    <h2 class="task-label">任務五</h2>
+                    <h2 class="task-name">計算徒長枝數量</h2>
+                </div>
+                <p>計算主幹二公尺以下(包含樹基部)之徒長支數量。</p>
+        
+                <div class="image-explanation">
+                    <img src="images/m2_Image.png" alt="說明圖片" />
+                </div>
+        
+                <div class="measurement-row">
+                    <label for="tree-height">徒長支數量</label>
+                    <input type="number" id="tree-branch-count" name="tree-height" placeholder="請輸入">
+                    <span class="unit">枝</span>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 完成按鈕 -->
+    <div class="footer">
+        <button class="complete-task">完成單元</button>
+    </div>
+</body>
+</html>

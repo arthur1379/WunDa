@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教案設定</title>
+    <script src="https://kit.fontawesome.com/bda5fa65a2.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+    <!--按鈕CSS設定-->
+    <style>
+        .custom-button {
+            display: block;
+            width: 80%;
+            max-width: 280px;
+            margin: 15px auto;
+            padding: 15px;
+            font-size: 16px;
+            background-color: #fff;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+    
+        .custom-button:hover {
+            background-color: #f0f0f0;
+            transform: scale(1.05);
+        }
+    
+        @media (max-width: 768px) {
+            .custom-button {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 頁首區塊，包含標題與教室資訊 -->
+    <header>
+        <div class="info-top">
+            <h1>科學偵探團的山櫻花事件簿</h1>
+            <span>教室密碼: <span id="password">0000</span></span>
+        </div>
+        <div class="info-bottom">
+            <div class="info-row">
+                <span>教案開始時間: <span id="start-time">--:--</span></span>
+                <span>目前已進行: <span id="elapsed-time">00:00:00</span></span>
+            </div>
+            <div class="info-row">
+                <span>當前參與人數: <span id="participants">--</span></span>
+                <span>任務完成率: <span id="completion-rate">--</span>%</span>
+            </div>
+        </div>
+    </header>
+
+    <!--教案按鈕設定-->
+    <div id="buttonContainer"></div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-item" onclick="navigateTo('MainPage.html')">
+                <i class="fa-solid fa-house-user"></i>
+                <span>回到地圖</span>
+            </div>
+            <div class="footer-item" onclick="navigateTo('CourseContext.html')">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>教案內容</span>
+            </div>
+            <div class="footer-item" onclick="navigateTo('GroupInfo.html')">
+                <i class="fa-solid fa-people-group"></i>
+                <span>學員管理</span>
+            </div>
+            <div class="footer-item" onclick="navigateTo('CourseSetting.html')">
+                <i class="fa-solid fa-gear"></i>
+                <span>教案設定</span>
+            </div>
+        </div>
+    </footer>
+    
+    
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            const role = "teacher"; // 或 "student"
+            const container = document.getElementById("buttonContainer");
+
+            if (role === "teacher") {
+                container.innerHTML = `
+              <button class="custom-button">時間重設</button>
+              <button class="custom-button">密碼重設</button>
+              <button class="custom-button">結束教案</button>
+            `;
+            } else if (role === "student") {
+                container.innerHTML = `
+              <button class="custom-button">退出教案</button>
+            `;
+            }
+        });
+    </script>
+</body>
+
+</html>

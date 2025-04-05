@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學員管理</title>
+    <script src="https://kit.fontawesome.com/bda5fa65a2.js" crossorigin="anonymous"></script>
+
+
+    <style>
+        /* 設定整體頁面樣式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            color: white;
+        }
+        
+        
+
+        .header h1 {
+            margin: 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid white;
+            /* 增加底部水平線 */
+        }
+
+        .info-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+            padding-top: 5px;
+        }
+
+        .info-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .info-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            .info-container {
+                flex-direction: column;
+            }
+            .info-row {
+                width: 100%;
+                justify-content: space-between;
+            }
+        } 
+       
+
+
+        /* 學員管理區塊 */
+        .student-management {
+            padding: 20px;
+            padding-bottom: 100px; /* 增加底部間距，避免被導航列擋住 */
+        }
+
+        /* 組別區塊 */
+        .group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid white;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .group-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .students {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .student {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .student img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #ccc;
+        }
+        .student span {
+            margin-top: 5px; /* 確保文字與頭像之間有適當間距 */
+        }
+
+        /* 組別資訊與按鈕 */
+        /* 右側資訊區塊，讓內容平均分配到與左側同高 */
+        .group-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* 讓內容均勻分布 */
+            align-items: flex-end;
+            flex: 1;
+        }
+
+        .task-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .task-status span {
+            background: #69B9A5;
+            color: white;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 14px;
+        }
+        /* 成果與刪除按鈕放大並排 */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .result-button, .delete-button {
+            background: white;
+            color: black;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .result-button:hover, .delete-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .result-button:active, .delete-button:active {
+            transform: scale(0.95);
+        }
+
+        .delete-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+        }
+        /* 組別樣式（手機版） */
+        @media (max-width: 768px) {
+            .group {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                background: #222;
+                padding: 10px;
+                border-radius: 10px;
+                margin-bottom: 10px;
+            }
+            .group-image {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                background-color: #ccc;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+            }
+            .group-info {
+                flex-grow: 1;
+                padding: 0 10px;
+            }
+            .group-actions {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .group-actions button {
+                padding: 5px 10px;
+                font-size: 14px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+        }
+
+        /* 底部導航欄 */
+        .footer {
+            width: 100%;
+            background-color: #111;
+            padding: 15px 0;
+            border-top: 2px solid white;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        /* 導航容器 */
+        .footer-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            background: #222;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        /* 選單項目 */
+        .footer-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 10px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 15px;
+            border-right: 1px solid white;
+            transition: transform 0.2s;
+        }
+
+        .footer-item:last-child {
+            border-right: none;
+        }
+
+        .footer-item:hover {
+            transform: scale(1.1);
+        }
+
+        .footer-item i {
+            font-size: 22px;
+        }
+
+        /* 手機版：隱藏文字，只顯示圖示 */
+        @media (max-width: 768px) {
+            /* 組別區塊：橫向排列 */
+            .group {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: #358492;
+                padding: 10px;
+                border-radius: 10px;
+                margin-bottom: 10px;
+            }
+
+            /* 左側：組別標題 + 學生資訊 */
+            .group-left {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            /* 團隊圖片縮小 */
+            .group-left .student img {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+            }
+
+            /* 學生資訊 */
+            .students {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 3px;
+            }
+
+            /* 標題與櫻花樹編號置頂 */
+            .group-info {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                justify-content: space-between;
+                flex: 1;
+                text-align: right;
+            }
+
+            /* 完成單元圓圈縮小 */
+            .task-status {
+                display: flex;
+                gap: 3px;
+            }
+            .task-status span {
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                background: #69B9A5;
+                color: white;
+            }
+
+            /* 右側按鈕區塊 */
+            .action-buttons {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            /* 成果按鈕 */
+            .result-button {
+                font-size: 14px;
+                padding: 8px 15px;
+                border-radius: 8px;
+            }
+
+            /* 刪除按鈕 */
+            .delete-button {
+                font-size: 20px;
+                padding: 5px;
+                color: white;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- 頂部資訊欄 -->
+    <header class="header">
+        <h1>學員管理</h1>
+        <div class="info-bar">
+            <div class="info-container">
+                <div class="info-row">
+                    <span>教案開始時間: <span id="start-time">--:--</span></span>
+                    <span>目前已進行: <span id="elapsed-time">00:00:00</span></span>
+                </div>
+                <div class="info-row">
+                    <span>當前參與人數: <span id="participants">--</span></span>
+                <span>任務完成率: <span id="completion-rate">--</span>%</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 學員管理區域 -->
+    <main class="student-management">
+        <div class="group" id="groupA">
+            <div class="group-left">
+                <h2>組別 A</h2>
+                <div class="students">
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員01</span>
+                    </div>
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員02</span>
+                    </div>
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員03</span>
+                    </div>
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員04</span>
+                    </div>
+                </div>
+            </div>
+            <div class="group-info">
+                <span>櫻花樹編號: XXXXX</span>
+                <div class="task-status">
+                    <span>①</span>
+                    <span>②</span>
+                    <span>③</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="result-button">成果</button>
+                    <button class="delete-button"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="group" id="groupA">
+            <div class="group-left">
+                <h2>組別 A</h2>
+                <div class="students">
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員01</span>
+                    </div>
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員02</span>
+                    </div>
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員03</span>
+                    </div>
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員04</span>
+                    </div>
+                </div>
+            </div>
+            <div class="group-info">
+                <span>櫻花樹編號: XXXXX</span>
+                <div class="task-status">
+                    <span>①</span>
+                    <span>②</span>
+                    <span>③</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="result-button">成果</button>
+                    <button class="delete-button"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="group" id="groupA">
+            <div class="group-left">
+                <h2>組別 A</h2>
+                <div class="students">
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員01</span>
+                    </div>
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員02</span>
+                    </div>
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員03</span>
+                    </div>
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員04</span>
+                    </div>
+                </div>
+            </div>
+            <div class="group-info">
+                <span>櫻花樹編號: XXXXX</span>
+                <div class="task-status">
+                    <span>①</span>
+                    <span>②</span>
+                    <span>③</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="result-button">成果</button>
+                    <button class="delete-button"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="group" id="groupA">
+            <div class="group-left">
+                <h2>組別 A</h2>
+                <div class="students">
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員01</span>
+                    </div>
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員02</span>
+                    </div>
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員03</span>
+                    </div>
+                    <div class="student">
+                        <img src="images/student_img.png" alt="學員頭像">
+                        <span>組員04</span>
+                    </div>
+                </div>
+            </div>
+            <div class="group-info">
+                <span>櫻花樹編號: XXXXX</span>
+                <div class="task-status">
+                    <span>①</span>
+                    <span>②</span>
+                    <span>③</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="result-button">成果</button>
+                    <button class="delete-button"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部導航欄 -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-item" onclick="navigateTo('MainPage.html')">
+                <i class="fa-solid fa-house-user"></i>
+                <span>回到地圖</span>
+            </div>
+            <div class="footer-item" onclick="navigateTo('CourseContext.html')">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>教案內容</span>
+            </div>
+            <div class="footer-item" onclick="navigateTo('GroupInfo.html')">
+                <i class="fa-solid fa-people-group"></i>
+                <span>學員管理</span>
+            </div>
+            <div class="footer-item" onclick="navigateTo('CourseSetting.html')">
+                <i class="fa-solid fa-gear"></i>
+                <span>教案設定</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>單元三 - 健檢報告</title>
+</head>
+
+<body>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedData = localStorage.getItem("finalData");
+
+            if (!savedData) {
+                document.body.innerHTML = "<p>❌ 沒有找到資料，請從任務頁面重新填寫</p>";
+                return;
+            }
+
+            const data = JSON.parse(savedData);
+
+            // ✅ 解構資料
+            const treeHeight = data.measurement?.treeHeight;
+            const treeDiameter = data.measurement?.treeDiameter;
+            const branchCount = data.measurement?.branchCount;
+            const selectedImg = data.healthSelection;
+            const canvasMarks = data.marks || {};
+
+            // ✅ 顯示基本資料
+            const basicInfo = `
+                <h2>使用者填寫資料：</h2>
+                <p>🌳 樣樹高度：${treeHeight ?? '未填寫'} 公尺</p>
+                <p>🌲 樹胸高直徑：${treeDiameter ?? '未填寫'} 公尺</p>
+                <p>🌿 徒長枝數量：${branchCount ?? '未填寫'} 枝</p>
+                <p>🖼️ 選擇的圖片代號：${selectedImg ?? '未選擇'}</p>
+            `;
+
+            // ✅ 顯示 Canvas 標記數量
+            let canvasMarksHtml = "<h3>🟠 標記資料：</h3><ul>";
+            for (const canvasId in canvasMarks) {
+                canvasMarksHtml += `<li>${canvasId}：${canvasMarks[canvasId].length} 筆標記</li>`;
+            }
+            canvasMarksHtml += "</ul>";
+
+            // ✅ 輸出到畫面
+            document.body.innerHTML = `
+                <div style="padding: 20px; font-family: Arial, sans-serif;">
+                ${basicInfo}
+                ${canvasMarksHtml}
+                </div>
+            `;
+        });
+    </script>
+</body>
+
+</html>

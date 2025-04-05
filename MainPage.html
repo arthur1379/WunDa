@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教案體驗</title>
+    <link rel="stylesheet" href="https://unpkg.com/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://unpkg.com/maptalks/dist/maptalks.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/three@0.147.0/build/three.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/three@0.147.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/three@0.147.0/examples/js/loaders/DRACOLoader.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/three@0.147.0/examples/js/libs/stats.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/maptalks.three/dist/maptalks.three.js"></script>
+    <style>
+        /*地圖CSS*/
+        html,
+        body {
+            margin: 0px;
+            height: 100%;
+            width: 100%;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+        }
+
+        .time-control {
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #999999;
+            border-radius: 3px;
+            box-shadow: 1px 1px 2px #000000;
+            vertical-align: middle;
+            font-family: sans-serif;
+            font-size: 14px;
+            padding: 8px 12px;
+        }
+
+        /* 全局樣式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #358492;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* 頂部導航 */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #358492;
+            padding: 15px;
+            color: white;
+            border-bottom: 2px solid white;
+        }
+
+        .menu-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* 側邊滑入選單 */
+        .side-menu {
+            width: 80%;
+            max-width: 300px;
+            height: 100%;
+            background: #358492;
+            position: fixed;
+            top: 0;
+            right: -100%;
+            /* 初始隱藏在右側 */
+            transition: right 0.3s ease-in-out;
+            padding-top: 60px;
+            box-shadow: -2px 0px 10px rgba(255, 255, 255, 0.2);
+            z-index: 1001;
+            /* 確保高於地圖 */
+        }
+
+        .side-menu h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .lesson-list {
+            padding: 10px;
+        }
+
+        .lesson-card {
+            background: white;
+            color: black;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            /* 滑鼠變成手型，表示可點擊 */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .lesson-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .activity-status {
+            display: block;
+            text-align: right;
+            color: gray;
+        }
+
+        /* 顯示選單 */
+        .side-menu.active {
+            right: 0;
+        }
+
+        /* 遮罩背景 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+            /* 高於地圖，但低於選單 */
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* 主要內容（地圖） */
+        .content {
+            position: relative;
+            text-align: center;
+            z-index: 1;
+            /* 確保低於 .side-menu */
+        }
+
+        .map-image {
+            width: 100%;
+            max-height: 90vh;
+            z-index: 1;
+            position: relative;
+            /* 避免被提升到選單上 */
+        }
+
+        /* 選單關閉按鈕 */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(4px);
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            color: #000;
+            padding: 20px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #cancelBtn {
+            background-color: #ccc;
+        }
+
+        #createClassBtn,
+        #codeConfirm {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .code-box {
+            font-size: 48px;
+            letter-spacing: 20px;
+            margin: 20px 0;
+            background: black;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 頂部導航 -->
+    <header class="header">
+        <h1>教案名稱</h1>
+        <button id="menuToggle" class="menu-button">☰</button>
+    </header>
+
+    <!-- 側邊滑入選單 -->
+    <nav id="sideMenu" class="side-menu">
+        <button class="close-btn" id="closeMenu">&times;</button>
+        <h2>教案體驗</h2>
+        <div class="lesson-list">
+            <div class="lesson-card">
+                <h3>01 教案名稱</h3>
+                <p>內容介紹</p>
+                <span class="activity-status">活動狀態</span>
+            </div>
+
+            <div class="lesson-card">
+                <h3>02 教案名稱</h3>
+                <p>內容介紹</p>
+                <span class="activity-status">活動狀態</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 遮罩背景 -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- 教案資訊 Modal -->
+    <div id="lessonModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">教案名稱</h2>
+            <p id="modalDescription">教案內容介紹</p>
+            <div class="modal-buttons">
+                <button id="cancelBtn">取消</button>
+                <button id="createClassBtn">建立教室</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 建立教室代碼 Modal -->
+    <div id="codeModal" class="modal">
+        <div class="modal-content">
+            <h2 id="codeTitle">01 教案名稱</h2>
+            <div class="code-box" id="generatedCode">1234</div>
+            <p>請將此編碼提供給學生</p>
+            <div class="modal-buttons">
+                <button id="codeCancel">取消</button>
+                <button id="codeConfirm">確定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要內容（地圖） -->
+    <main class="content">
+        
+        
+    </main>
+    <div id="map"></div>
+    <div class="time-control">
+        <!-- <input id="date" type="range" min="1" max="365" step="1"><label for="date"></label>
+                <input id="time" type="range" min="0" max="23" step="1"><label for="time"></label> -->
+        <button onclick="CameraFollowOpen()">定位</button>
+        <button onclick="ToggleBaseLayer()">切換圖層</button>
+        <div>
+            <input type="checkbox" id="insect" name="insect" />
+            <label for="insect">昆蟲</label>
+        </div>
+        <div>
+            <input type="checkbox" id="plant" name="plant" />
+            <label for="plant">植物</label>
+        </div>
+        <div>
+            <input type="checkbox" id="viewPoint" name="viewPoint" checked />
+            <label for="viewPoint">景點</label>
+        </div>
+        <div>
+            <input type="checkbox" id="arPoint" name="arPoint" />
+            <label for="arPoint">AR資訊點</label>
+        </div>
+    </div>
+
+    <script src="MainPage.js"></script>
+    <script>
+        // THREE.ColorManagement.enabled = true
+        let baseLayerOpen = false;
+        let cameraFollow = true;
+        const cPoint = { x: 121.13106, y: 23.9755 };//中心點座標=>萬大中心
+        // const cPoint = { x: 120.211507, y: 23.053281 };//中心點座標=>我家中心
+        // const manPos = { x: 121.13121, y: 23.97312 };//人物定位座標
+        const manPos = { x: 121.132288, y: 23.974804 }
+        const loader = new THREE.GLTFLoader();
+        const dracoLoader = new THREE.DRACOLoader();
+        const raycaster = new THREE.Raycaster();
+        const downDirection = new THREE.Vector3(0, 0, -1);
+        let tModel = null;
+        let stats = null;
+        let watchID = null;
+        let manModel = null;
+        let camera = null;
+        // const currentXY = { x: 121.13106, y: 23.9755 };
+        // console.log(loader)
+        let map = new maptalks.Map("map", {
+            center: [cPoint.x, cPoint.y],
+            zoom: 19,
+            pitch: 40,
+            // bearing: 180,
+            maxZoom: 21, // 設定最大縮放級別
+            minZoom: 18,  // 設定最小縮放級別
+            centerCross: true,
+            dragPitch: false, //地圖拖曳俯仰
+            touchPitch: false,
+            doubleClickZoom: true,
+            // baseLayer: new maptalks.TileLayer('tile', {
+            //     urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            //     subdomains: ['a', 'b', 'c', 'd'],
+            //     attribution: '&copy; <a href="http://osm.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/">CARTO</a>'
+            // }),
+            // maxExtent: [121.12791, 23.97779, 121.13421, 23.97312]
+            maxExtent: [121.12476, 23.98012, 121.13736, 23.97079]
+
+        });
+
+        // console.log(map.getRenderer())
+
+        //fps監視器
+        stats = new Stats();
+        // map.getContainer().appendChild(stats.dom);
+        animate();
+        function animate() {
+            requestAnimationFrame(animate);
+            stats.update();
+        }
+
+        map.setCenter([manPos.x, manPos.y]);
+        // setInterval(() => {
+        //     map.setCenter([manPos.x, manPos.y]);
+        // }, 1000);
+
+        // the ThreeLayer to draw buildings
+        let threeLayer = new maptalks.ThreeLayer('t', {
+            forceRenderOnMoving: true,  //移图时强制渲染
+            forceRenderOnZooming: true, //缩放时强制渲染
+            forceRenderOnRotating: true, //旋转或倾斜时强制渲染
+            animation: true
+        });
+        // console.log(threeLayer.getScene)
+
+        threeLayer.prepareToDraw = async function (gl, scene, camera) {
+
+            camera = camera
+            scene.add(new THREE.AmbientLight(0xffffff, 1.5));
+            gl.outputEncoding = THREE.sRGBEncoding;
+            console.log(gl)
+            // const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            // dirLight.position.set(0, 0, 10);
+            // scene.add(dirLight);
+            // ✅ 3. GLB 加载优化：使用 Draco 压缩
+            // dracoLoader.setDecoderPath('/draco/');
+            // loader.setDRACOLoader( dracoLoader );
+
+            // gps追蹤
+            // startTracking()
+            // 
+        };
+        console.log(threeLayer)
+
+
+        async function addModels() {
+            await addTerrainGlb();
+            // console.log(tModel)
+
+            addTreeGlb()
+            addPointGlb()
+            await addManGlb()
+        }
+
+
+        threeLayer.addTo(map);
+
+
+        async function main() {
+            await addModels();
+            CameraFollowOpen();
+        }
+        main()
+
+
+
+        function addTerrainGlb() {
+            return new Promise((resolve, reject) => {
+
+                // var loader = new THREE.GLTFLoader();
+                //var tModel = null;
+                loader.load('全園區場景20250303.glb', function (glb) {
+
+                    tModel = glb.scene;
+                    // 確保模型載入後才返回
+                    tModel.rotation.x = Math.PI / 2;
+                    let tModelSale = 0.01423
+                    tModel.scale.set(tModelSale, tModelSale, tModelSale);
+
+                    tModel.position.copy(threeLayer.coordinateToVector3(cPoint));
+
+                    tModel.position.y -= 0.072
+
+                    // tModel.traverse((child) => {
+
+                    //     if (child.isMesh) {
+                    //         let material = child.material;
+
+                    //         material.map.colorSpace = THREE.LinearSRGBColorSpace;
+                    //         material.map.needsUpdate = true; // 確保變更生效
+
+                    //     }
+                    //     console.log(child)
+                    // });
+
+                    //模型可被碰撞偵測
+                    tModel.receiveShadow = true;
+
+                    threeLayer.addMesh(tModel);
+
+                    resolve();
+
+                });
+            });
+        }
+
+        function addTreeGlb() {
+
+            loader.load('樹20250303.glb', function (glb) {
+
+                treeModel = glb.scene;
+                // 確保模型載入後才返回
+                treeModel.rotation.x = Math.PI / 2;
+                let tModelSale = 0.01423
+                treeModel.scale.set(tModelSale, tModelSale, tModelSale);
+
+                treeModel.position.copy(threeLayer.coordinateToVector3(cPoint));
+
+                treeModel.position.y -= 0.072
+
+                //模型可被碰撞偵測
+                treeModel.receiveShadow = true;
+
+                threeLayer.addMesh(treeModel);
+
+            });
+
+        }
+
+        addPointGlb = () => {
+
+            loader.load('point.glb', function (glb) {
+
+                var pModel = glb.scene;
+
+                pModel.rotation.x = Math.PI / 2;
+                var pModelScale = 0.01423;
+                pModel.scale.set(pModelScale, pModelScale, pModelScale);
+
+                var positions = [
+                    { x: 121.12791, y: 23.97779 },//左上角
+                    { x: 121.13421, y: 23.97312 },//右下角
+                    { x: 121.128752, y: 23.973942 },//萬大生態電廠環境教育站
+                    { x: 121.130429, y: 23.976261 },//保和宮
+                    { x: 121.133818, y: 23.975756 },//舊辦公室
+                ];
+
+                let pModels = [];
+                positions.forEach(pos => {
+                    var pModelClone = pModel.clone();
+                    var vector3 = threeLayer.coordinateToVector3(pos);
+
+                    //raycaster.set(光線開始位置, 光線照射方向)
+                    raycaster.set(new THREE.Vector3(vector3.x, vector3.y, 100), downDirection); // 從空中往下偵測
+
+                    // console.log(tModel)
+                    var intersects = raycaster.intersectObject(tModel, true);
+                    if (intersects.length > 0) {
+                        vector3.z = intersects[0].point.z + 0.1; // 設定 pointer 落在地形上
+                    }
+
+                    pModelClone.position.copy(vector3);
+                    pModels.push(pModelClone)
+                    // threeLayer.addMesh(pModelClone);
+                });
+                threeLayer.addMesh(pModels)
+
+            });
+        }
+
+        addManGlb = () => {
+            return new Promise((resolve, reject) => {
+
+                loader.load('point.glb', function (glb) {
+                    manModel = glb.scene;
+                    manModel.traverse((child) => {
+                        if (child.isMesh) {
+                            child.material.color.set(0x000000); // 設置為紅色
+                        }
+                    });
+
+                    manModel.rotation.x = Math.PI / 2;
+                    var manModelScale = 0.04;
+                    manModel.scale.set(manModelScale, manModelScale, manModelScale);
+
+
+                    var vector3 = threeLayer.coordinateToVector3(manPos);
+                    //raycaster.set(光線開始位置, 光線照射方向)
+                    raycaster.set(new THREE.Vector3(vector3.x, vector3.y, 100), downDirection); // 從空中往下偵測
+
+                    // console.log(tModel)
+                    var intersects = raycaster.intersectObject(tModel, true);
+                    if (intersects.length > 0) {
+                        vector3.z = intersects[0].point.z + 0.1; // 設定 pointer 落在地形上
+                    }
+
+                    manModel.position.copy(vector3);
+                    threeLayer.addMesh(manModel);
+                    resolve()
+                })
+            })
+        }
+
+
+        function animate() {
+            requestAnimationFrame(animate);
+            stats.update();
+        }
+
+        // 監聽地圖移動事件，相機不追蹤用戶
+        map.on('moving', function (param) {
+            if (cameraFollow) {
+                cameraFollow = false;
+                console.log("取消追蹤");
+            }
+            // alert(cameraFollow);
+        });
+
+
+        moveendLock = true
+        map.on('moveend', async function (param) {
+            if (moveendLock) {
+                moveendLock = false;
+
+                // 獲取地圖中心點
+                mapcenter = map.getCenter();
+                // 獲取相機位置
+                let cameraPosition = map.cameraPosition
+                let cameraVector3 = { x: cameraPosition[0], y: cameraPosition[1], z: cameraPosition[2] }
+                // 獲取相機方向
+                let cameraForward = map.cameraForward
+                let direction = { x: cameraForward[0], y: cameraForward[1], z: cameraForward[2] }
+
+
+                // 設定 raycaster（從相機位置向準心方向發射射線）
+                raycaster.set(cameraVector3, direction);
+
+                var intersects = raycaster.intersectObject(tModel, true);
+                if (intersects.length > 0 && !baseLayerOpen) {
+                    const glRes = map.getGLRes();
+
+                    const coordinate = map.pointAtResToCoordinate(intersects[0].point, glRes);
+
+                    var intersectPoint = intersects[0].point;
+                    // console.log(intersectPoint)
+                    mapcenter.z = intersectPoint.z / 0.01423; // 設定 pointer 落在地形上
+                    mapcenter.x = parseFloat(coordinate.x.toFixed(8));
+                    mapcenter.y = parseFloat(coordinate.y.toFixed(8));
+                    // console.log(mapcenter);
+
+                    // 更新地圖中心點
+
+                    // console.log(map.getCenter());
+                } else {
+                    mapcenter.z = 0.1
+                }
+                map.setCenter([mapcenter.x, mapcenter.y, mapcenter.z]);
+            }
+            moveendLock = true
+        });
+
+        panToCoo = (mapcenter) => {
+            return new Promise((resolve, reject) => {
+                map.panTo([mapcenter.x, mapcenter.y, mapcenter.z])
+            })
+        }
+
+        //開啟相機追蹤用戶
+        CameraFollowOpen = () => {
+
+            // map.setCenter([manPos.x, manPos.y]);
+            // console.log(manModel.position.z / 0.02)
+
+            zindex = (manModel.position.z - 0.1) / 0.01423
+            console.log(zindex)
+            map.setCenter([manPos.x, manPos.y, zindex])
+            //camera.lookAt( manModel.position.x, manModel.position.y, manModel.position.z )
+            // console.log(manModel)
+            //高度（米）
+
+            cameraFollow = true;
+            console.log("開啟追蹤");
+
+            //console.log(map)
+
+
+
+        }
+        let foregroundLayer = new maptalks.ImageLayer('foreground',
+            [
+                {
+                    url: '250224萬大地圖_前景.png',
+                    extent: [121.12791, 23.97779, 121.13421, 23.97312],
+                    opacity: 1
+                },
+            ]);
+        let backgroundLayer = new maptalks.ImageLayer('background',
+            [
+                {
+                    url: '250213萬大地圖_new450.png',
+                    extent: [121.12791, 23.97779, 121.13421, 23.97312],
+                    opacity: 1
+                },
+            ]);
+        let markerLayer = new maptalks.VectorLayer('marker');
+        let ctttt = { x: 121.128881, y: 23.975858 };
+        // console.log({x: 121.132288, y: 23.974804})
+        // console.log(1234)
+        let marker1 = new maptalks.Marker(ctttt,
+            {
+                'symbol': {
+                    'markerType': 'ellipse',
+                    'markerFill': 'rgb(135,196,240)',
+                    'markerFillOpacity': 1,
+                    'markerLineColor': '#34495e',
+                    'markerLineWidth': 3,
+                    'markerLineOpacity': 1,
+                    'markerLineDasharray': [],
+                    'markerWidth': 40,
+                    'markerHeight': 40,
+                    'markerDx': 0,
+                    'markerDy': 0,
+                    'markerOpacity': 1
+                }
+            }).addTo(markerLayer);
+        ToggleBaseLayer = async () => {
+            if (!baseLayerOpen) {
+                // console.log(map)
+                map.setPitch(0) // 傾斜角設定0
+                map.setBaseLayer(new maptalks.ImageLayer('tile', {
+                    url: "250224萬大地圖_底圖_low.jpg",  // 你的自製地圖圖片
+                    // extent: [121.12791, 23.97779, 121.13421, 23.97312], // 左下角經緯度 (minX, minY) 和右上角經緯度 (maxX, maxY)
+                    extent: [121.12161, 23.98246, 121.14051, 23.96845],
+                })); // 設定底部圖層
+
+                // let meshes = threeLayer.getMeshes()
+                // threeLayer.removeMesh(meshes) // 移除全部模型
+                map.removeLayer(threeLayer); // 移除3d圖層
+                map.addLayer(backgroundLayer); // 新增背景圖層
+                map.addLayer(markerLayer); // 新增標記圖層
+                map.addLayer(foregroundLayer); // 新增前景圖層
+            } else {
+
+                map.addLayer(threeLayer); // 新增3d圖層
+                map.removeLayer(backgroundLayer); // 移除背景圖層
+                map.removeLayer(markerLayer); // 移除標記圖層
+                map.removeLayer(foregroundLayer); // 移除前景圖層
+                map.setPitch(40) // 傾斜角設定40
+                map.removeBaseLayer();
+                // CameraFollowOpen()
+                // await addTerrainGlb();
+                // addPointGlb()
+                // await addManGlb()
+
+            }
+            baseLayerOpen = !baseLayerOpen;
+        }
+
+
+
+
+
+        map.on('zoomend', function (e) {
+            console.log(map.getZoom())
+            currentLookAt = e.target.cameraLookAt
+            claPoint = {
+                x: currentLookAt[0],
+                y: currentLookAt[1],
+            }
+            const glRes = map.getGLRes();
+            const coordinate = map.pointAtResToCoordinate(claPoint, glRes);
+
+            currentLookAtX = coordinate.x.toFixed(6)
+            currentLookAtY = coordinate.y.toFixed(6)
+
+            vector3X = manPos.x.toFixed(6)
+            vector3Y = manPos.y.toFixed(6)
+            if ((currentLookAtX != vector3X || currentLookAtY != vector3Y) && cameraFollow) {
+                console.log("取消追蹤")
+                // console.log(cameraFollow)
+                cameraFollow = false;
+                // alert("取消追蹤 currentCP[0] = " + currentLookAtX + " vector3.x = " + vector3X + " currentCP[1] = " + currentLookAtY + " vector3.y = " + vector3Y)
+            }
+            // alert(e.target.scrollWheelZoom._enabled);
+        })
+
+        startTracking = () => {
+            if (!navigator.geolocation) {
+                alert("您的瀏覽器不支援 GPS 定位");
+                return;
+            }
+
+            // 監聽位置變化（每 2 秒更新）
+            watchID = navigator.geolocation.watchPosition(
+                function (position) {
+                    if (!manModel) return;
+
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    manPos.x = lng;
+                    manPos.y = lat;
+                    console.log(`使用者最新位置: ${lat}, ${lng}`);
+
+                    // 將 GPS 經緯度轉換為 Maptalks Vector3 坐標
+                    let newPos = threeLayer.coordinateToVector3([manPos.x, manPos.y]);
+                    raycaster.set(new THREE.Vector3(newPos.x, newPos.y, 100), downDirection); // 從空中往下偵測
+
+                    // console.log(tModel)
+                    var intersects = raycaster.intersectObject(tModel, true);
+                    if (intersects.length > 0) {
+                        newPos.z = intersects[0].point.z + 0.1; // 設定 pointer 落在地形上
+                    } else {
+                        newPos.z = 0.1
+                    }
+                    manModel.position.copy(newPos);
+                    if (cameraFollow) {
+                        zindex = (manModel.position.z - 0.1) / 0.01423
+                        map.setCenter([manPos.x, manPos.y, zindex]);
+                        cameraFollow = true;
+                    }
+                },
+                function (error) {
+                    console.error("定位失敗:", error.message);
+                },
+                {
+                    enableHighAccuracy: true, // 使用 GPS 最高精度
+                    timeout: 10000, // 10 秒超時
+                    maximumAge: 0, // 不使用快取，每次都拿最新位置
+                }
+            );
+        }
+
+
+        function getRandomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function fakeData() {
+            let data = { insects: [], plants: [], viewPoints: [], arPoints: [] };
+            e = [121.12791, 23.97779, 121.13421, 23.97312]
+            for (let i = 0; i < 200; i++) {
+                data.insects.push({
+                    position: {
+                        x: getRandomInRange(121.12791, 121.13421),
+                        y: getRandomInRange(23.97779, 23.97312)
+                    },
+                    weight: Math.floor(getRandomInRange(0, 10))
+                });
+            }
+
+            for (let i = 0; i < 100; i++) {
+                data.plants.push({
+                    position: {
+                        x: getRandomInRange(121.12791, 121.13421),
+                        y: getRandomInRange(23.97779, 23.97312)
+                    },
+                    weight: Math.floor(getRandomInRange(0, 10))
+                });
+            }
+
+            for (let i = 0; i < 10; i++) {
+                data.viewPoints.push({
+                    position: {
+                        x: getRandomInRange(121.12791, 121.13421),
+                        y: getRandomInRange(23.97779, 23.97312)
+                    }
+                });
+            }
+
+            for (let i = 0; i < 50; i++) {
+                data.arPoints.push({
+                    position: {
+                        x: getRandomInRange(121.12791, 121.13421),
+                        y: getRandomInRange(23.97779, 23.97312)
+                    }
+                });
+            }
+
+            return data;
+        }
+
+        const data = fakeData();
+
+        let pModels = [];
+        document.getElementById("insect").addEventListener("change", async function (event) {
+            let insectModels = [];
+            if (event.target.checked) {
+                await addInsectGlb(data.insects);
+                console.log(pModels);
+                console.log("昆蟲選中");
+            } else {
+
+                threeLayer.removeMesh(pModels);
+                console.log("昆蟲取消選中");
+            }
+        });
+        document.getElementById("plant").addEventListener("change", function (event) {
+            if (event.target.checked) {
+                console.log("植物選中");
+            } else {
+                console.log("植物取消選中");
+            }
+        });
+        document.getElementById("viewPoint").addEventListener("change", function (event) {
+            if (event.target.checked) {
+                console.log("景點選中");
+            } else {
+                console.log("景點取消選中");
+            }
+        });
+        document.getElementById("arPoint").addEventListener("change", function (event) {
+            if (event.target.checked) {
+                console.log("AR資訊點選中");
+            } else {
+                console.log("AR資訊點取消選中");
+            }
+        });
+
+        addInsectGlb = async (insects) => {
+
+            await loader.load('point.glb', async function (glb) {
+
+                var pModel = glb.scene;
+                pModel.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material.color.set(0xB900E5); // 設置為紅色
+                    }
+                });
+                pModel.rotation.x = Math.PI / 2;
+                var pModelScale = 0.01423;
+                pModel.scale.set(pModelScale, pModelScale, pModelScale);
+
+
+                insects.forEach(insect => {
+                    var pModelClone = pModel.clone();
+                    var vector3 = threeLayer.coordinateToVector3(insect.position);
+
+                    //raycaster.set(光線開始位置, 光線照射方向)
+                    raycaster.set(new THREE.Vector3(vector3.x, vector3.y, 100), downDirection); // 從空中往下偵測
+
+                    // console.log(tModel)
+                    var intersects = raycaster.intersectObject(tModel, true);
+                    if (intersects.length > 0) {
+                        vector3.z = intersects[0].point.z + 0.1; // 設定 pointer 落在地形上
+                    }
+
+                    pModelClone.position.copy(vector3);
+                    pModels.push(pModelClone)
+                    // threeLayer.addMesh(pModelClone);
+                });
+                threeLayer.addMesh(pModels)
+
+                return pModels
+            });
+
+
+        }
+    </script>
+</body>
+
+</html>

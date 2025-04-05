@@ -1,0 +1,167 @@
+<!--教師端的頁面-->
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科學偵探團的山櫻花事件簿</title>
+    <script src="https://kit.fontawesome.com/bda5fa65a2.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- 頁首區塊，包含標題與教室資訊 -->
+    <header>
+        <div class="info-top">
+            <h1>科學偵探團的山櫻花事件簿</h1>
+            <span>教室密碼: <span id="password">0000</span></span>
+        </div>
+        <div class="info-bottom">
+            <div class="info-row">
+                <span>教案開始時間: <span id="start-time">--:--</span></span>
+                <span>目前已進行: <span id="elapsed-time">00:00:00</span></span>
+            </div>
+            <div class="info-row">
+                <span>當前參與人數: <span id="participants">--</span></span>
+                <span>任務完成率: <span id="completion-rate">--</span>%</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 組別顯示區塊 -->
+    <!-- 組別顯示區塊，平板版橫向排列 -->
+    <section class="group-container">
+        <div class="group">
+            <img src="images/student_img.png" alt="學員頭像">
+            <div>組別A</div>
+        </div>
+        <div class="group">
+            <img src="images/student_img.png" alt="學員頭像">
+            <div>組別B</div>
+        </div>
+        <div class="group">
+            <img src="images/student_img.png" alt="學員頭像">
+            <div>組別C</div>
+        </div>
+        <div class="group">
+            <img src="images/student_img.png" alt="學員頭像">
+            <div>組別D</div>
+        </div>
+        <div class="group">
+            <img src="images/student_img.png" alt="學員頭像">
+            <div>組別E</div>
+        </div>
+    </section>
+
+    <!-- 主要內容區塊，包含按鈕與任務清單 -->
+    <main>
+        <!-- 按鈕區塊 -->
+        <section class="buttons">
+            <button class="open-library-btn" onclick="openMediaLibrary()"><i class="fa-regular fa-folder"></i>教案媒體庫</button>
+            <button id="startTimer"><i class="fa-regular fa-clock"></i>啟動計時</button>
+        </section>
+    </main>
+
+    <!-- 單元顯示區塊 -->
+    <section class="task-container">
+        <div class="task">
+            <div class="task-header">
+                <span>單元一：櫻花樹上的紅寶石</span>
+                <span>完成組數: 5</span>
+            </div>
+            <div class="forde">
+                <!-- 
+                <p>描述文字 1</p>
+                <p>描述文字 2</p>
+                <p>描述文字 3</p>
+                <p>描述文字 4</p> 
+                -->
+            </div>
+            
+        </div>
+        <div class="task" onclick="location.href='Unit2.html'">
+            <div class="task-header">
+                <span>單元二：櫻花調查員</span>
+                <span>完成組數: 2</span>
+            </div>
+            <div class="forde">
+                <!-- 
+                <p>描述文字 1</p>
+                <p>描述文字 2</p>
+                <p>描述文字 3</p>
+                <p>描述文字 4</p> 
+                -->
+            </div>
+        </div>
+        <div class="task">
+            <div class="task-header">
+                <span>單元三：健檢報告</span>
+                <span>完成組數: 0</span>
+            </div>
+            <div class="forde">
+                <!-- 
+                <p>描述文字 1</p>
+                <p>描述文字 2</p>
+                <p>描述文字 3</p>
+                <p>描述文字 4</p> 
+                -->
+                
+            </div>
+            <!-- 直接加入「觀看報告」按鈕 -->
+            <div>
+                <button class="report-button">觀看報告</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-item" onclick="navigateTo('MainPage.html')">
+                <i class="fa-solid fa-house-user"></i>
+                <span>回到地圖</span>
+            </div>
+            <div class="footer-item" onclick="navigateTo('CourseContext.html')">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>教案內容</span>
+            </div>
+            <div class="footer-item" onclick="navigateTo('GroupInfo.html')">
+                <i class="fa-solid fa-people-group"></i>
+                <span>學員管理</span>
+            </div>
+            <div class="footer-item" onclick="navigateTo('CourseSetting.html')">
+                <i class="fa-solid fa-gear"></i>
+                <span>教案設定</span>
+            </div>
+        </div>
+    </footer>
+    <!-- 媒體庫視窗 -->
+    <div class="media-library-overlay" id="mediaLibrary">
+        <div class="media-library">
+            <!-- 返回按鈕 -->
+            <div class="media-header">
+                <button class="back-button" onclick="closeMediaLibrary()">
+                    <i class="fa-solid fa-arrow-left"></i> 教案媒體庫
+                </button>
+            </div>
+
+            <!-- 可滾動媒體選擇區域 -->
+            <div class="media-content">
+                <div class="media-grid">
+                    <!-- JS 動態插入媒體項目 -->
+                </div>
+            </div>
+
+            <!-- 播放按鈕 -->
+            <button class="play-button" onclick="playSelectedMedia()">播放</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,362 @@
+/* 全局樣式 */
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* 防止橫向滾動條 */
+}
+body {
+    font-family: Arial, sans-serif;
+    background: #358492;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+/* 頂部區塊 */
+.header {
+    padding: 20px;
+    border-bottom: 2px solid white;
+}
+
+/* 任務資訊區塊 */
+.task-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* 左側 - 任務內容 */
+.task-content {
+    width: 50%; /* 確保左半部有足夠空間 */
+    min-width: 300px; /* 避免內容過度縮小 */
+}
+
+.task-content h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+/* 虛線區塊 */
+.dotted-line {
+    width: 100%;
+    height: 10px;
+    border-bottom: 1px dotted white;
+    margin: 5px 0;
+}
+
+/* 右側 - 任務地點與對象 */
+.task-location {
+    width: 40%; /* 調整寬度，讓右邊內容對齊 */
+    text-align: right;
+}
+
+.task-location p {
+    margin: 5px 0;
+}
+
+/* 主要內容排版 */
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 20px;
+    padding-bottom: 100px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 20px 100px;
+    /* 留給底部按鈕空間 */
+}
+/* 每一組任務的橫向排版 */
+.task-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+/* 任務五單排處理 */
+.task-group.single {
+    grid-template-columns: 1fr;
+}
+
+/* 孔洞位置調查 */
+.dual-canvas-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+canvas.tree-canvas-north {
+    background-image: url('images/tree/tree-north.svg');
+    background-size: cover;
+    background-position: center;
+}
+
+canvas.tree-canvas-south {
+    background-image: url('images/tree/tree-south.svg');
+    background-size: cover;
+    background-position: center;
+}
+
+.tree-side {
+    flex: 1 1 300px;
+    /* 每個畫布容器最小300px */
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+}
+
+canvas {
+    background-color: transparent;
+    border: 1px dashed white;
+    border-radius: 8px;
+}
+
+.tree-label {
+    margin-top: 5px;
+    font-size: 14px;
+    color: white;
+}
+
+#canvasNorth_T2, #canvasSouth_T2, #canvasNorth_T3, #canvasSouth_T3{
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 2;
+    /* 或使用固定比例 */
+    border: 1px dashed white;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    display: block;
+}
+
+/*---------------*/
+
+/* 任務標題區塊 */
+.task-header {
+    background: white;
+    color: #358492;
+    border-radius: 16px;
+    padding: 12px 20px;
+    width: 100%; /* 滿版 */
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: left; /* 文字靠左 */
+    box-sizing: border-box; /* 確保 padding 不影響寬度 */
+  }
+  
+.task-header h2 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 18px;
+}
+/* 任務區塊 */
+/* 任務一*/
+.image-explanation img {
+    width: 100%;
+    max-width: 400px;
+    background: #fff;
+    display: block;
+    margin: 20px auto;
+    border-radius: 8px;
+}
+.measurement-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto 10px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.measurement-row label {
+    flex-shrink: 0;
+    width: 100px;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.measurement-row input {
+    flex: 1;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    outline: none;
+    background-color: #FFC85A;
+}
+.measurement-row input:focus {
+    box-shadow: 0 0 0 2px white;
+}
+
+.measurement-row .unit {
+    flex-shrink: 0;
+    font-size: 14px;
+    color: white;
+    padding-left: 5px;
+}
+
+
+/*-----------*/
+.task {
+    width: 100%;
+    padding: 15px;
+    background: #358492;
+    border-radius: 10px;
+}
+
+/* 樹幹標記區 */
+.tree-container {
+    position: relative;
+}
+
+.delete-mark {
+    background-color: white;
+    color: red;
+    border: 1px solid red;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    text-align: center;
+    line-height: 18px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+}
+
+#treeCanvas {
+    width: 100%;
+    height: 350px;
+    background: black;
+    display: block;
+    border-radius: 10px;
+}
+
+/* 標記刪除按鈕 */
+.tree-container .delete-mark {
+    position: absolute;
+    background: white;
+    color: black;
+    font-size: 12px;
+    padding: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* 圖片選擇 */
+.image-selection {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+
+
+/* 修正內容區塊底部間距，避免被「完成單元」擋住 */
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    padding-bottom: 80px; /* 增加底部間距 */
+}
+
+/* 修正圖片大小 */
+.image-selection {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.image-selection img {
+    width: 100%;
+    /*max-width: 250px; /* 限制圖片最大寬度 */
+    height: auto;
+    cursor: pointer;
+    border: 2px solid white;
+    transition: transform 0.2s;
+}
+
+.image-selection img.selected {
+    border: 3px solid yellow;
+    transform: scale(1.05);
+}
+
+
+/* 固定底部按鈕 */
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #358492;
+    padding: 15px 0;
+    text-align: center;
+    border-top: 2px solid white;
+}
+
+/* 完成按鈕 */
+.complete-task {
+    font-size: 18px;
+    padding: 15px 30px;
+    background: #FFC85A;
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.complete-task:hover {
+    background: #FF8000;
+    transform: scale(1.1); /* 放大 10% */
+    box-shadow: 0 2px 2px rgba(255, 255, 255, 0.3);
+}
+
+.complete-task:active {
+    transform: scale(0.95); /* 點擊時縮小 */
+}
+.container,
+.task {
+  box-sizing: border-box; /* 確保 padding 不超出寬度 */
+}
+
+/* 手機適應 */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        padding-bottom: 100px; /* 手機版增加更大間距 */
+    }
+    .task {
+        width: 100%; /* 原本是 48%，改為 100% 滿版 */
+        margin-bottom: 20px;
+    }
+    
+    .task-content,
+    .task-location {
+        width: 100%;
+        text-align: left;
+    }
+
+    .task-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .task-location {
+        text-align: left;
+    }
+    .image-selection img {
+        max-width: 100%; /* 確保圖片在手機上滿版 */
+    }
+
+    .complete-task {
+        font-size: 16px;
+        padding: 12px 20px;
+    }
+    .task-group {
+        grid-template-columns: 1fr;
+    }
+}
